@@ -1,1 +1,13 @@
-/monitoring/.env
+# Ficheiros de variáveis reais
+.env
+
+# Ficheiros do Traefik / Certificados
+acme.json
+*.key
+*.pem
+
+# Pastas de dados dos contentores (Volumes locais)
+data/
+*/data/
+*.sqlite
+*.db
