@@ -31,3 +31,4 @@ networks:
 secrets:
   portainer_pass:
     file: ./.secrets/portainer_pass.txt
+
