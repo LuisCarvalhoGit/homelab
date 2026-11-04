@@ -61,7 +61,7 @@ jobs:
             chmod 600 .secrets/*
 
             docker compose pull
-            docker compose up -d --remove-orphans
+            docker compose up -d --remove-orphans 
 
             cd - > /dev/null
           done
