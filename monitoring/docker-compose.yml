@@ -40,8 +40,8 @@ services:
     container_name: grafana
     restart: unless-stopped
     environment:
-      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASS}
+      - GF_SECURITY_ADMIN_USER__FILE=/run/secrets/grafana_user
+      - GF_SECURITY_ADMIN_PASSWORD_FILE=/run/secrets/grafana_pass
     volumes:
       - grafana-data:/var/lib/grafana
     depends_on:
@@ -61,3 +61,9 @@ volumes:
 networks:
   homelab_net:
     external: true
+
+secrets:
+  grafana_user: 
+    file: ./.secrets/grafana_user.txt
+  grafana_pass:
+    file: ./.secrets/grafana_pass.txt

@@ -1,0 +1,68 @@
+name: Homelab CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # CI
+  validate-config:
+    name: Lint & Validate All Compose files Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validade each docker-compose.yml
+        run: |
+          find . -type f -name "docker-compose.yml" | while read compose_file;
+          do
+            stack_dir=$(dirname "$compose_file")
+            echo "A validar a sintaxe na pasta: $stack_dir"
+
+            cd "$stack_dir"
+            # create fake .env
+            touch .env
+            docker compose config -q
+
+            cd - > /dev/null
+          done
+
+  # CD
+  deploy-to-pi:
+    name: Deploy to Raspberry Pi Homelab
+    needs: validate-config
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy each stack dynamically
+        env:
+          GRAFANA_USER: ${{ secrets.GRAFANA_USER }}
+          GRAFANA_PASS: ${{ secrets.GRAFANA_PASS }}
+        run: |
+          find . -type f -name "docker-compose.yml" | while read compose_file;
+          do
+            stack_dir=$(dirname "$compose_file")
+            echo "Processing deploy on folder: $stack_dir"
+
+            cd "$stack_dir"
+
+            mkdir -p .secrets
+            echo -n "$GRAFANA_USER" > .secrets/grafana_user.txt
+            echo -n "$GRAFANA_PASS" > .secrets/grafana_pass.txt
+            chmod 600 .secrets/*
+
+            docker compose pull
+            docker compose up -d --remove-orphans
+
+            cd - > /dev/null
+          done
+
+      - name: Clean Up Unused Images
+        run: docker image prune -f

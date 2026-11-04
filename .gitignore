@@ -1,5 +1,6 @@
 # Ficheiros de variáveis reais
 .env
+.secrets
 
 # Ficheiros do Traefik / Certificados
 acme.json
