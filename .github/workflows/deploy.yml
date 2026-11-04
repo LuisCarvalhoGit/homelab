@@ -45,6 +45,7 @@ jobs:
         env:
           GRAFANA_USER: ${{ secrets.GRAFANA_USER }}
           GRAFANA_PASS: ${{ secrets.GRAFANA_PASS }}
+          PORTAINER_ADMIN_HASH: ${{ secrets.PORTAINER_ADMIN_HASH }}
         run: |
           find . -type f -name "docker-compose.yml" | while read compose_file;
           do
@@ -56,6 +57,7 @@ jobs:
             mkdir -p .secrets
             echo -n "$GRAFANA_USER" > .secrets/grafana_user.txt
             echo -n "$GRAFANA_PASS" > .secrets/grafana_pass.txt
+            echo -n "$PORTAINER_ADMIN_HASH" > .secrets/portainer_admin_hash.txt
             chmod 600 .secrets/*
 
             docker compose pull
