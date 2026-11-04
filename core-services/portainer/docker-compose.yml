@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
-    command: -H unix:///var/run/docker.sock --admin-password-file /run/secrets/portainer_admin_hash
+    command: -H unix:///var/run/docker.sock --admin-password-file /run/secrets/portainer_pass
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.portainer.rule=Host(`portainer.homelab.local`)"
@@ -18,7 +18,7 @@ services:
     networks:
       - homelab_net
     secrets:
-      - portainer_admin_hash
+      - portainer_pass
 
 volumes:
   portainer_data:
@@ -29,5 +29,5 @@ networks:
     external: true
 
 secrets:
-  portainer_admin_hash:
-    file: ./.secrets/portainer_admin_hash.txt
+  portainer_pass:
+    file: ./.secrets/portainer_pass.txt
