@@ -1,0 +1,34 @@
+---
+- name: Instalar UFW e Fail2ban
+  apt:
+    name:
+      - ufw
+      - fail2ban
+    state: present
+
+- name: Permitir SSH no UFW
+  ufw:
+    rule: allow
+    port: '22'
+    proto: tcp
+
+- name: Permitir HTTP e HTTPS no UFW
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - '80'
+    - '443'
+
+- name: Ativar UFW com politica padrao de rejeicao de entrada
+  ufw:
+    state: enabled
+    policy: deny
+    direction: incoming
+
+- name: Garantir que o serviço Fail2ban esta ativo
+  service:
+    name: fail2ban
+    state: started
+    enabled: yes

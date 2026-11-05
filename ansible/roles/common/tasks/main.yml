@@ -1,0 +1,17 @@
+---
+- name: Atualizar cache do APT
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Instalar ferramentas essenciais do sistema
+  apt:
+    name:
+      - git
+      - curl
+      - htop
+      - rclone
+      - ca-certificates
+      - gnupg
+      - lsb-release
+    state: present

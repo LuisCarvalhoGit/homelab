@@ -1,0 +1,41 @@
+---
+# - name: Adicionar utilizador ao grupo video (Watchdog)
+#   user:
+#     name: "{{ ansible_user }}"
+#     groups: video
+#     append: yes
+
+- name: Criar pasta de backups no host
+  file:
+    path: "/home/{{ ansible_user }}/backups_homelab"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+# - name: Configurar Cron Job - Hardware Watchdog (Root)
+#   cron:
+#     name: "Hardware Watchdog Execution"
+#     minute: "*/15"
+#     job: "/home/{{ ansible_user }}/infra/homelab/scripts/hardware_watchdog.sh"
+#     user: root
+
+
+
+- name: Configurar Cron Job - Volume Backups (User)
+  cron:
+    name: "Rclone Cloudflare R2 Backups"
+    minute: "0"
+    hour: "3"
+    weekday: "0,3"
+    job: "/home/{{ ansible_user }}/infra/homelab/scripts/backup_volumes.sh >> /home/{{ ansible_user }}/backups_homelab/cron_panic.log 2>&1"
+    user: "{{ ansible_user }}"
+
+- name: Configurar Cron Job - Docker Garbage Collector (User)
+  cron:
+    name: "Docker Garbage Collection"
+    minute: "0"
+    hour: "4"
+    weekday: "0"
+    job: "/home/{{ ansible_user }}/infra/homelab/scripts/garbage_collector.sh >> /home/{{ ansible_user }}/backups_homelab/cron_panic.log 2>&1"
+    user: "{{ ansible_user }}"

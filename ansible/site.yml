@@ -1,0 +1,10 @@
+---
+- name: Provision and Secure Raspberry Pi Homelab
+  hosts: raspberrypi
+  become: true
+  roles:
+    - common
+    - sdcard_opt
+    - security
+    - docker
+    - homelab_ops

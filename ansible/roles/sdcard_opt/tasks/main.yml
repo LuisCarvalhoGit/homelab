@@ -1,0 +1,16 @@
+---
+- name: Garantir pasta de configuração do journald
+  file:
+    path: /etc/systemd/journald.conf.d
+    state: directory
+    mode: '0755'
+
+- name: Limitar tamanho dos logs em disco a 50MB (preservar SD)
+  copy:
+    dest: /etc/systemd/journald.conf.d/00-journal-limit.conf
+    content: |
+      [Journal]
+      SystemMaxUse=50M
+      RuntimeMaxUse=20M
+    mode: '0644'
+  notify: Restart Journald
