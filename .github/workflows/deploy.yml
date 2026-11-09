@@ -59,7 +59,6 @@ jobs:
             echo -n "$GRAFANA_USER" > .secrets/grafana_user.txt
             echo -n "$GRAFANA_PASS" > .secrets/grafana_pass.txt
             echo -n "$PORTAINER_PASS" > .secrets/portainer_pass.txt
-            echo -n "$HOMELAB_DOMAIN" > .secrets
             chmod 600 .secrets/*
 
             docker compose pull
