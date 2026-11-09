@@ -20,6 +20,7 @@ services:
       - "--providers.docker.network=homelab_net" # Obriga o Traefik a usar apenas esta rede
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
+      - "--ping=true"
     networks:
       - homelab_net
     labels:
@@ -27,6 +28,12 @@ services:
       - "traefik.http.routers.traefik-dash.rule=Host(`traefik.homelab.local`)"
       - "traefik.http.routers.traefik-dash.entrypoints=web"
       - "traefik.http.routers.traefik-dash.service=api@internal"
+    healthcheck:
+      test: [ "CMD", "traefik", "healthcheck", "--ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 networks:
   homelab_net:
