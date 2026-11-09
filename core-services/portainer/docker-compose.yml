@@ -8,7 +8,7 @@ services:
     command: -H unix:///var/run/docker.sock --admin-password-file /run/secrets/portainer_pass
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`rpi0.tail349f50.ts.net`) && PathPrefix(`/portainer`)"
+      - "traefik.http.routers.portainer.rule=Host(`${HOMELAB_DOMAIN}`) && PathPrefix(`/portainer`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=myresolver"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"

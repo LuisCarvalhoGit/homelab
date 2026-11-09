@@ -28,7 +28,7 @@ services:
       - homelab_net
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.traefik-dash.rule=Host(`rpi0.tail349f50.ts.net`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traefik-dash.rule=Host(`${HOMELAB_DOMAIN}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.traefik-dash.entrypoints=websecure"
       - "traefik.http.routers.traefik-dash.tls.certresolver=myresolver"
       - "traefik.http.routers.traefik-dash.service=api@internal"

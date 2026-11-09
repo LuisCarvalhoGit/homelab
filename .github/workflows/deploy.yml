@@ -16,15 +16,15 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Validade each docker-compose.yml
+        env:
+            HOMELAB_DOMAIN: dummy.ts.net
         run: |
           find . -type f -name "docker-compose.yml" | while read compose_file;
           do
             stack_dir=$(dirname "$compose_file")
-            echo "A validar a sintaxe na pasta: $stack_dir"
+            echo "Validating syntax on folder: $stack_dir"
 
             cd "$stack_dir"
-            # create fake .env
-            touch .env
             docker compose config -q
 
             cd - > /dev/null
@@ -46,6 +46,7 @@ jobs:
           GRAFANA_USER: ${{ secrets.GRAFANA_USER }}
           GRAFANA_PASS: ${{ secrets.GRAFANA_PASS }}
           PORTAINER_PASS: ${{ secrets.PORTAINER_PASS }}
+          HOMELAB_DOMAIN: ${{ vars.HOMELAB_DOMAIN }}
         run: |
           find . -type f -name "docker-compose.yml" | while read compose_file;
           do
@@ -58,6 +59,7 @@ jobs:
             echo -n "$GRAFANA_USER" > .secrets/grafana_user.txt
             echo -n "$GRAFANA_PASS" > .secrets/grafana_pass.txt
             echo -n "$PORTAINER_PASS" > .secrets/portainer_pass.txt
+            echo -n "$HOMELAB_DOMAIN" > .secrets
             chmod 600 .secrets/*
 
             docker compose pull
