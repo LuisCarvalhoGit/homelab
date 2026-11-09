@@ -33,15 +33,17 @@ services:
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
+      - '--web.external-url=https://ts.net'
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.prometheus.rule=Host(`prometheus.homelab.local`)"
-      - "traefik.http.routers.prometheus.entrypoints=web"
+      - "traefik.http.routers.prometheus.rule=Host(`tail349f50.ts.net`) && PathPrefix(`/prometheus`)"
+      - "traefik.http.routers.prometheus.entrypoints=websecure"
+      - "traefik.http.routers.prometheus.tls.certresolver=myresolver"
       - "traefik.http.services.prometheus.loadbalancer.server.port=9090"
     networks:
       - homelab_net
     healthcheck:
-      test: ["CMD", "promtool", "check", "healthy", "--url=http://localhost:9090"]
+      test: ["CMD", "promtool", "check", "healthy", "--url=http://localhost:9090/prometheus/-/healthy"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -54,14 +56,17 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER__FILE=/run/secrets/grafana_user
       - GF_SECURITY_ADMIN_PASSWORD_FILE=/run/secrets/grafana_pass
+      - GF_SERVER_ROOT_URL=https://ts.net
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
     volumes:
       - grafana-data:/var/lib/grafana
     depends_on:
       - prometheus
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.homelab.local`)"
-      - "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.routers.grafana.rule=Host(`tail349f50.ts.net`) && PathPrefix(`/grafana`)"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=myresolver"
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
     networks:
       - homelab_net
