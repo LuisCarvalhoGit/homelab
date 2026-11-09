@@ -8,14 +8,13 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock
     command:
       - "--log.level=INFO"
       - "--api.dashboard=true"
-      - "--api.insecure=true"
+      - "--api.insecure=false"
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--providers.docker.network=homelab_net" # Obriga o Traefik a usar apenas esta rede
@@ -29,8 +28,7 @@ services:
       - homelab_net
     labels:
       - "traefik.enable=true"
-      # Acesso ao dashboard via https://ts.net
-      - "traefik.http.routers.traefik-dash.rule=Host(`tail349f50.ts.net`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traefik-dash.rule=Host(`rpi0.tail349f50.ts.net`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.traefik-dash.entrypoints=websecure"
       - "traefik.http.routers.traefik-dash.tls.certresolver=myresolver"
       - "traefik.http.routers.traefik-dash.service=api@internal"
